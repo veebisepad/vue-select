@@ -1001,7 +1001,7 @@
        * @return {boolean}
        */
       isTrackingValues () {
-        return typeof this.modelValue === 'undefined' || this.$options.props.hasOwnProperty('reduce');
+        return typeof this.modelValue === 'undefined' || typeof this.reduce === 'function';
       },
 
       /**
