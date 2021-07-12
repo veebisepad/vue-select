@@ -116,7 +116,6 @@
       'option:deselecting',
       'option:deselected'
     ],
-
     props: {
       /**
        * Contains the currently selected value. Very similar to a
@@ -650,6 +649,18 @@
         this.setInternalValueFromOptions(this.modelValue)
       }
     },
+
+    emits: [
+      'open', 'close',
+      'update:modelValue',
+      'search',
+      'search:compositionstart',
+      'search:compositionend',
+      'search:keydown',
+      'search:blur',
+      'search:focus',
+      'search:input'
+    ],
 
     methods: {
       /**
