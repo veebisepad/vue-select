@@ -1,6 +1,6 @@
 {
-  "name": "vue-select",
-  "version": "3.10.8",
+  "name": "vue-select-connorshea",
+  "version": "3.12.1",
   "description": "Everything you wish the HTML <select> element could do, wrapped up into a lightweight, extensible Vue component.",
   "author": "Jeff Sagal <sagalbot@gmail.com>",
   "homepage": "https://vue-select.org",
@@ -18,13 +18,14 @@
     "build": "cross-env NODE_ENV=production webpack --config build/webpack.prod.conf.js --progress",
     "build:docs": "cd docs && yarn build",
     "build:preview": "cd docs && yarn build",
+    "prepare": "yarn build",
     "test": "jest",
     "semantic-release": "semantic-release",
     "commit": "git-cz"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sagalbot/vue-select.git"
+    "url": "https://github.com/connorshea/vue-select.git"
   },
   "peerDependencies": {
     "vue": "3.x"
@@ -68,7 +69,8 @@
     "url-loader": "^1.1.2",
     "vue": "^3.0.2",
     "vue-html-loader": "^1.2.4",
-    "vue-jest": "^5.0.0-alpha.5",
+    "vue-jest": "5.0.0-alpha.8",
+
     "vue-loader": "^16.0.0-beta.8",
     "vue-server-renderer": "^2.6.10",
     "vue-style-loader": "^4.1.2",

@@ -53,7 +53,7 @@
       </div>
     </div>
     <transition :name="transition">
-      <ul ref="dropdownMenu" v-if="dropdownOpen" :id="`vs${uid}__listbox`" :key="`vs${uid}__listbox`" class="vs__dropdown-menu" role="listbox" @mousedown.prevent="onMousedown" @mouseup="onMouseUp" v-append-to-body>
+      <ul ref="dropdownMenu" v-if="dropdownOpen" :id="`vs${uid}__listbox`" :key="`vs${uid}__listbox`" class="vs__dropdown-menu" role="listbox" @mousedown.prevent="onMousedown" @mouseup="onMouseUp" tabindex="-1" v-append-to-body>
         <slot name="list-header" v-bind="scope.listHeader" />
         <li
           role="option"
@@ -100,8 +100,22 @@
 
     directives: {appendToBody},
 
-    emits : ['open', 'close', 'search:focus', 'search:blur', 'update:modelValue', 'option:created'],
-
+    emits: [
+      'open', 'close',
+      'update:modelValue',
+      'search',
+      'search:compositionstart',
+      'search:compositionend',
+      'search:keydown',
+      'search:blur',
+      'search:focus',
+      'search:input',
+      'option:created',
+      'option:selecting',
+      'option:selected',
+      'option:deselecting',
+      'option:deselected'
+    ],
     props: {
       /**
        * Contains the currently selected value. Very similar to a
@@ -669,6 +683,7 @@
        * @return {void}
        */
       select(option) {
+        this.$emit('option:selecting', option);
         if (!this.isOptionSelected(option)) {
           if (this.taggable && !this.optionExists(option)) {
             /* @TODO: could we use v-model instead of push-tags? */
@@ -679,6 +694,7 @@
             option = this.selectedValue.concat(option)
           }
           this.updateValue(option);
+          this.$emit('option:selected', option);
         }
         this.onAfterSelect(option)
       },
@@ -689,9 +705,11 @@
        * @return {void}
        */
       deselect (option) {
+        this.$emit('option:deselecting', option);
         this.updateValue(this.selectedValue.filter(val => {
           return !this.optionComparator(val, option);
         }));
+        this.$emit('option:deselected', option);
       },
 
       /**
@@ -758,11 +776,11 @@
         //  they dropdown state will be set in their click handlers
 
         const ignoredButtons = [
-          ...(document.querySelectorAll('.vs__deselect') || []),
+          ...([this.$refs['deselectButtons']] || []),
           ...([this.$refs['clearButton']] || []),
         ];
 
-        if (ignoredButtons.some(ref => ref.contains(event.target) || ref === event.target)) {
+        if (this.searchEl === undefined || ignoredButtons.filter(Boolean).some(ref => ref.contains(event.target) || ref === event.target)) {
           event.preventDefault();
           return;
         }
@@ -994,7 +1012,7 @@
        * @return {boolean}
        */
       isTrackingValues () {
-        return typeof this.modelValue === 'undefined' || this.$options.props.hasOwnProperty('reduce');
+        return typeof this.modelValue === 'undefined' || typeof this.reduce === 'function';
       },
 
       /**
